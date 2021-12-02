@@ -3,14 +3,22 @@ import { createCategory, updateCategory } from "../services/categorySerivce";
 import "../styles/form.css";
 import { useNavigate, useParams } from "react-router-dom";
 
-function CategoryForm({
-  parents,
-  setCategories,
-  categories,
-  setParentCategories,
-  selectedCategory,
-}) {
+import { useStateProvider } from "../reducer/provider";
+import { types } from "../reducer/reducer";
+
+function CategoryForm() {
+  const [{ categories, parents, selectedCategory }, dispatch] =
+    useStateProvider();
+
   const params = useParams();
+
+  useEffect(() => {
+    if (params.id === "new")
+      return dispatch({
+        type: types.add_selectedCategory,
+        selectedCategory: {},
+      });
+  }, [params.id]);
 
   const statuses = ["New", "Used"];
   const [name, setName] = useState(selectedCategory?.name || "");
@@ -18,14 +26,12 @@ function CategoryForm({
     selectedCategory?.is_parent || false
   );
   const [parent_id, setParentId] = useState(
-    selectedCategory?.parent_id ||
-      selectedCategory?.parent_id?._id ||
-      parents[0]?._id
+    selectedCategory?.parent_id?._id || parents[0]?._id
   );
   const [is_popular, setIsPopular] = useState(
-    selectedCategory.is_popular || false
+    selectedCategory?.is_popular || false
   );
-  const [status, setStatus] = useState(selectedCategory.status || statuses[0]);
+  const [status, setStatus] = useState(selectedCategory?.status || statuses[0]);
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
@@ -52,8 +58,21 @@ function CategoryForm({
         });
       }
 
-      setCategories([...categories, category]);
-      if (category.is_parent) setParentCategories([...parents, category]);
+      dispatch({
+        type: types.add_categories,
+        categories: [...categories, category],
+      });
+      if (category.is_parent)
+        dispatch({
+          type: types.add_parents,
+          parents: [...parents, category],
+        });
+
+      dispatch({
+        type: types.add_selectedCategory,
+        selectedCategory: {},
+      });
+
       setName("");
       setIsParent("");
       setParentId("");
@@ -101,7 +120,6 @@ function CategoryForm({
           setError("");
         }}
       >
-        <option value={null}>none</option>
         {parents?.map((parent) => (
           <option
             value={parent._id}
