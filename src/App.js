@@ -9,6 +9,7 @@ import { getCategories } from "./services/categorySerivce";
 function App() {
   const [categories, setCategories] = useState([]);
   const [parentCategories, setParentCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState({});
 
   const loadCategories = async () => {
     const { data: categories } = await getCategories();
@@ -26,15 +27,13 @@ function App() {
       <Navbar />
       <div className="container">
         <Routes>
-          <Route path="/" exact element={<Home categories={categories} />} />
           <Route
-            path="add-category"
+            path="/"
+            exact
             element={
-              <CategoryForm
-                parents={parentCategories}
+              <Home
                 categories={categories}
-                setCategories={setCategories}
-                setParentCategories={setParentCategories}
+                setSelectedCategory={setSelectedCategory}
               />
             }
           />
@@ -45,6 +44,8 @@ function App() {
                 parents={parentCategories}
                 categories={categories}
                 setCategories={setCategories}
+                setParentCategories={setParentCategories}
+                selectedCategory={selectedCategory}
               />
             }
           />

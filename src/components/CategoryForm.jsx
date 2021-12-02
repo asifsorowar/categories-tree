@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createCategory } from "../services/categorySerivce";
+import { createCategory, updateCategory } from "../services/categorySerivce";
 import "../styles/form.css";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -8,19 +8,26 @@ function CategoryForm({
   setCategories,
   categories,
   setParentCategories,
+  selectedCategory,
 }) {
-  //   const params = useParams();
+  const params = useParams();
 
-  //   useEffect(() => {
-  //       getCategory
-  //   })
+  console.log(selectedCategory);
 
   const statuses = ["New", "Used"];
-  const [name, setName] = useState("");
-  const [is_parent, setIsParent] = useState(false);
-  const [parent_id, setParentId] = useState(parents[0]?._id);
-  const [is_popular, setIsPopular] = useState(false);
-  const [status, setStatus] = useState(statuses[0]);
+  const [name, setName] = useState(selectedCategory?.name || "");
+  const [is_parent, setIsParent] = useState(
+    selectedCategory?.is_parent || false
+  );
+  const [parent_id, setParentId] = useState(
+    selectedCategory?.parent_id ||
+      selectedCategory?.parent_id?._id ||
+      parents[0]?._id
+  );
+  const [is_popular, setIsPopular] = useState(
+    selectedCategory.is_popular || false
+  );
+  const [status, setStatus] = useState(selectedCategory.status || statuses[0]);
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
@@ -28,13 +35,24 @@ function CategoryForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const category = await createCategory({
-        name,
-        is_parent,
-        parent_id,
-        is_popular,
-        status,
-      });
+      let category = {};
+      if (params.id !== "new") {
+        category = await createCategory({
+          name,
+          is_parent,
+          parent_id,
+          is_popular,
+          status,
+        });
+      } else {
+        category = await updateCategory(selectedCategory._id, {
+          name,
+          is_parent,
+          parent_id,
+          is_popular,
+          status,
+        });
+      }
 
       setCategories([...categories, category]);
       if (category.is_parent) setParentCategories([...parents, category]);

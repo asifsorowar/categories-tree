@@ -13,3 +13,13 @@
   text-align: left;
   border-radius: 5px;
 }
+
+.link-home {
+  text-decoration: none;
+  color: black;
+  text-transform: uppercase;
+}
+
+.link-home:hover {
+  background-color: rgba(1, 1, 1, 0.6);
+}

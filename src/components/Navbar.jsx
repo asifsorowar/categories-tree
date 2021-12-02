@@ -8,7 +8,7 @@ function Navbar() {
       <NavLink className="link" to={"/"}>
         Home
       </NavLink>
-      <NavLink className="link" to={"/add-category"}>
+      <NavLink className="link" to={"/add-category/new"}>
         Add Category
       </NavLink>
     </div>
