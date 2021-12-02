@@ -12,8 +12,6 @@ function CategoryForm({
 }) {
   const params = useParams();
 
-  console.log(selectedCategory);
-
   const statuses = ["New", "Used"];
   const [name, setName] = useState(selectedCategory?.name || "");
   const [is_parent, setIsParent] = useState(
@@ -36,7 +34,7 @@ function CategoryForm({
     e.preventDefault();
     try {
       let category = {};
-      if (params.id !== "new") {
+      if (params.id === "new") {
         category = await createCategory({
           name,
           is_parent,
