@@ -11,11 +11,11 @@ export const getCategories = () => {
 };
 
 export const updateCategory = (id, category) => {
-  return http.put(apiEndpoint + id, category);
+  return http.put(apiEndpoint + "/" + id, category);
 };
 
 export const deleteCategory = (id) => {
-  return http.delete(apiEndpoint + id);
+  return http.delete(apiEndpoint + "/" + id);
 };
 
 export default {
